@@ -21,12 +21,18 @@ export class Employee {
   @Column({length: 60})
   password: string;
 
+  @Exclude({ toPlainOnly: true})
+  @Column({default: false})
+  isCustomPassword: boolean;
+
   @BeforeInsert()
   async hashedPassword(): Promise<void> {
-    const first3LettersOfTheName = this.name.substring(0, 3);
-    const first3LettersOfTheDocument = this.document.substring(0, 3);
-    const passwordToHashed = `${first3LettersOfTheName}${first3LettersOfTheDocument}`;
-    const hash = await bcrypt.hash(passwordToHashed, 10);
-    this.password = hash;
+    if (!this.isCustomPassword) {
+      const first3LettersOfTheName = this.name.substring(0, 3);
+      const first3LettersOfTheDocument = this.document.substring(0, 3);
+      const passwordToHashed = `${first3LettersOfTheName}${first3LettersOfTheDocument}`;
+      const hash = await bcrypt.hash(passwordToHashed, 10);
+      this.password = hash;
+    }
   }
 }
