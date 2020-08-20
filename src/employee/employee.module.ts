@@ -7,6 +7,7 @@ import { EmployeeController } from './employee.controller';
 @Module({
   imports: [TypeOrmModule.forFeature([Employee])],
   controllers: [EmployeeController],
-  providers: [EmployeeService]
+  providers: [EmployeeService],
+  exports: [EmployeeService]
 })
 export class EmployeeModule {}

@@ -5,9 +5,14 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EmployeeModule } from './employee/employee.module';
+import { AuthModule } from './auth/auth.module';
+import { Reflector, APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './auth/shared/jwtAuth.guard';
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true
+    }),
     TypeOrmModule.forRoot({
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -16,14 +21,22 @@ import { EmployeeModule } from './employee/employee.module';
       port: Number(process.env.TYPEORM_PORT),
       username: process.env.TYPEORM_USERNAME,
       password: process.env.TYPEORM_PASSWORD,
-      database: process.env.TYPEORM_DATABASE,      
+      database: process.env.TYPEORM_DATABASE,
       synchronize: false,
       logging: false,
       entities: [Employee]
     }),
     EmployeeModule,
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useFactory: ref => new JwtAuthGuard(ref),
+      inject: [Reflector],
+    },
+  ],
 })
-export class AppModule {}
+export class AppModule { }
