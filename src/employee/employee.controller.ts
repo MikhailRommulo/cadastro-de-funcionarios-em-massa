@@ -35,4 +35,25 @@ export class EmployeeController {
       throw new HttpException('Senha e corfimação de senha não combinam!', HttpStatus.CONFLICT);
     }
   }
+
+  @Get()
+  async hasCustomPassword(
+    @Query('custom-password') idEmployee: string
+  ): Promise<boolean | string> {
+    const employee = await this.service.findOne({
+      where: {
+        id: idEmployee
+      }
+    });
+    
+    if (!employee) {
+      throw new HttpException('Funcionário não encontrado', HttpStatus.NOT_FOUND);
+    } else {
+      if (employee.isCustomPassword) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
 }
