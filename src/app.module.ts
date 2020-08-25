@@ -1,3 +1,4 @@
+import { AddressOfEmployee } from './models/addressOfEmployee.entity';
 import { Employee } from './models/employee.entity';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
@@ -24,7 +25,7 @@ import { JwtAuthGuard } from './auth/shared/jwtAuth.guard';
       database: process.env.TYPEORM_DATABASE,
       synchronize: false,
       logging: false,
-      entities: [Employee]
+      entities: [Employee, AddressOfEmployee]
     }),
     EmployeeModule,
     AuthModule,

@@ -1,8 +1,10 @@
+import { AddressOfEmployee } from './addressOfEmployee.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  BeforeInsert
+  BeforeInsert,
+  ManyToOne
 } from "typeorm";
 import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
@@ -24,6 +26,9 @@ export class Employee {
   @Exclude({ toPlainOnly: true})
   @Column({default: false})
   isCustomPassword: boolean;
+
+  @ManyToOne(() => AddressOfEmployee, (addressOfEmployee: AddressOfEmployee) => addressOfEmployee.employees, {cascade: ['insert','remove','update']})
+  addressOfEmployee: AddressOfEmployee;
 
   @BeforeInsert()
   async hashedPassword(): Promise<void> {

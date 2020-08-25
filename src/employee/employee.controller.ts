@@ -4,6 +4,7 @@ import { EmployeeService } from './employee.service';
 import { Controller, HttpException, HttpStatus, Get, Query } from '@nestjs/common';
 import { Crud, Override, ParsedRequest, CrudRequest, ParsedBody } from '@nestjsx/crud';
 import * as bcrypt from 'bcrypt';
+import { AllowAny } from 'src/custom-decorators/allowAny.decorator';
 
 @Crud({
   model: {
@@ -15,6 +16,13 @@ import * as bcrypt from 'bcrypt';
       type: 'uuid',
       primary: true
     }
+  },
+  query: {
+    join: {
+      addressOfEmployee: {
+        eager: true,
+      }
+    }
   }
 })
 @Controller('employees')
@@ -22,6 +30,7 @@ export class EmployeeController {
   constructor(public service: EmployeeService) { }
 
   @Override()
+  @AllowAny()
   async createOne(
     @ParsedRequest() req: CrudRequest,
     @ParsedBody() employee: EmployeeDto
@@ -36,7 +45,7 @@ export class EmployeeController {
     }
   }
 
-  @Get()
+  @Get('/custom-password')
   async hasCustomPassword(
     @Query('custom-password') idEmployee: string
   ): Promise<boolean | string> {
